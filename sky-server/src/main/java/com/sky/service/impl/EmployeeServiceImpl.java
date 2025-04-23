@@ -9,13 +9,16 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+@Slf4j
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -137,6 +142,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.update(employee);
+    }
+
+
+    /**
+     * 为修改密码准备的私有函数,用于根据ID获取到用户与其真实的密码
+     * @param id
+     * @return
+     */
+    private Employee getByIdWithPassword(Long id) {
+        return employeeMapper.getById(id);
+    }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        passwordEditDTO.setEmpId(BaseContext.getCurrentId());
+        passwordEditDTO.setOldPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()));
+        passwordEditDTO.setNewPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()));
+
+        Employee employee=getByIdWithPassword(passwordEditDTO.getEmpId());
+        if (employee==null) throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        log.info("{}",employee.getPassword());
+        log.info("{}",passwordEditDTO.getOldPassword());
+        if (Objects.equals(employee.getPassword(), passwordEditDTO.getOldPassword())){
+            employee.setPassword(passwordEditDTO.getNewPassword());
+
+            employee.setUpdateTime(LocalDateTime.now());
+            employee.setUpdateUser(BaseContext.getCurrentId());
+
+            employeeMapper.update(employee);
+        }
+        else throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
     }
 
 }
