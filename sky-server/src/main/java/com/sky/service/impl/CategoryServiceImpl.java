@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void update(CategoryDTO categoryDTO) {
-        Category category = new Category();
+        Category category = getById(categoryDTO.getId());
         BeanUtils.copyProperties(categoryDTO, category);
 
         category.setUpdateTime(LocalDateTime.now());
