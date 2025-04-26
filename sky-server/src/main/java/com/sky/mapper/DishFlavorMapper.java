@@ -19,8 +19,6 @@ public interface DishFlavorMapper {
     @Select("select * from dish_flavor where dish_id=#{dishId}")
     List<DishFlavor> getByDishId(Long dishId);
 
-    void update(DishFlavor dishFlavor);
-
     @Insert("insert into dish_flavor(dish_id, name, value) " +
             "values " +
             "(#{dishId},#{name},#{value})")

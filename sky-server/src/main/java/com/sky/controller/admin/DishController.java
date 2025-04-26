@@ -59,10 +59,19 @@ public class DishController {
         return Result.success();
     }
 
-    //TODO 未实现
-    @PutMapping
+    @PostMapping
+    @ApiOperation("新增菜品")
     public Result save(@RequestBody DishDTO dishDTO){
-        log.info("");
+        log.info("新增菜品:{}",dishDTO);
+        dishService.save(dishDTO);
+        return Result.success();
+    }
+
+    @DeleteMapping
+    @ApiOperation("菜品批量删除")
+    public Result delete(@RequestParam List<Long> ids){
+        log.info("菜品批量删除:{}",ids);
+        dishService.deleteBatch(ids);
         return Result.success();
     }
 

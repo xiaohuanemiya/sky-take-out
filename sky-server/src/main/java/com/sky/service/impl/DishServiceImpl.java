@@ -2,14 +2,18 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 
@@ -34,6 +39,8 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private SetmealDishMapper setmealDishMapper;
 
     @Override
     public PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO) {
@@ -94,11 +101,64 @@ public class DishServiceImpl implements DishService {
         dishMapper.update(dish);
         dishFlavorMapper.deleteByDishId(dishDTO.getId());
 
-        List<DishFlavor> dishFlavors=dishDTO.getFlavors();
-        for(DishFlavor flavor:dishFlavors){
-            flavor.setDishId(dishDTO.getId());
-            log.info("{}",flavor);
-            dishFlavorMapper.insert(flavor);
+        dishDTO.getFlavors().forEach(dishFlavor -> {
+            dishFlavor.setDishId(dishDTO.getId());
+            dishFlavorMapper.insert(dishFlavor);
+        });
+    }
+
+    @Override
+    public void save(DishDTO dishDTO) {
+        Dish dish=new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        dish.setUpdateUser(BaseContext.getCurrentId());
+        dish.setUpdateTime(LocalDateTime.now());
+        dish.setCreateUser(BaseContext.getCurrentId());
+        dish.setCreateTime(LocalDateTime.now());
+
+        dishMapper.insert(dish);
+
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+
+        dishDTO.getFlavors().forEach(dishFlavor -> {
+            dishFlavor.setDishId(dishDTO.getId());
+            dishFlavorMapper.insert(dishFlavor);
+        });
+
+    }
+
+    /**
+     * 菜品批量删除
+     * @param ids
+     */
+
+    @Override
+    public void deleteBatch(List<Long> ids) {
+        //判断当前菜品是否能够删除--是否存在起售中的菜品
+        for (Long id : ids) {
+            Dish dish=dishMapper.getById(id);
+            if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)){
+                //当前菜品有处于起售中的
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
         }
+        
+        //判断当前菜品是否能够删除--是否存在菜品被套餐关联
+        List<Long> setmealIds=setmealDishMapper.getSetmealIdsByDishIds(ids);
+        if (setmealIds!=null && !setmealIds.isEmpty()){
+            //当前菜品被套餐关联了
+            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+
+        //删除菜品表中的菜品数据
+
+        ids.forEach(id -> {
+            dishMapper.deleteById(id);
+        });
+
+        //删除菜品关联的口味数据
+        ids.forEach(id -> {
+            dishFlavorMapper.deleteByDishId(id);
+        });
     }
 }
