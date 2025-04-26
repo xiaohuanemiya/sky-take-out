@@ -75,5 +75,12 @@ public class DishController {
         return Result.success();
     }
 
+    @PostMapping("/status/{status}")
+    public Result startOrStop(@PathVariable Integer status, @RequestParam Long id){
+        log.info("菜品启用/禁用: id:{},status:{}",id,status);
+        dishService.startOrStop(status,id);
+        return Result.success();
+    }
+
 
 }
