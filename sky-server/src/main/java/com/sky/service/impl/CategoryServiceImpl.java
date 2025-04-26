@@ -22,6 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    /**
+     * 添加分类
+     * @param categoryDTO
+     */
     @Override
     public void save(CategoryDTO categoryDTO) {
         Category category = Category.builder()
@@ -38,6 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.insert(category);
     }
 
+    /**
+     * 分类分页查询
+     * @param categoryPageQueryDTO
+     * @return
+     */
     @Override
     public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
         PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
@@ -47,7 +56,10 @@ public class CategoryServiceImpl implements CategoryService {
         return new PageResult(total, records);
     }
 
-
+    /**
+     * 修改分类
+     * @param categoryDTO
+     */
     @Override
     public void update(CategoryDTO categoryDTO) {
         Category category = getById(categoryDTO.getId());
@@ -59,16 +71,30 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.update(category);
     }
 
+    /**
+     * 根据id查询分类
+     * @param id
+     * @return
+     */
     @Override
     public Category getById(Long id) {
         return categoryMapper.getById(id);
     }
 
+    /**
+     * 根据id删除分类
+     * @param id
+     */
     @Override
     public void deleteById(Long id) {
         categoryMapper.deleteById(id);
     }
 
+    /**
+     * 启用/禁用分类
+     * @param status
+     * @param id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
         categoryMapper.update(Category.builder()
@@ -77,10 +103,14 @@ public class CategoryServiceImpl implements CategoryService {
                 .build());
     }
 
+    /**
+     * 根据分类类型查询分类
+     * @param type
+     * @return
+     */
     @Override
     public List<Category> list(Integer type) {
-        List<Category> list=categoryMapper.getByType(type);
-        return list;
+        return categoryMapper.getByType(type);
     }
 
 

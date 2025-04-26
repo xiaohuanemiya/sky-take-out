@@ -126,6 +126,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(employee);
     }
 
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
     @Override
     public Employee getById(Long id) {
         Employee employee= employeeMapper.getById(id);
@@ -133,6 +138,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 修改员工
+     * @param employeeDTO
+     */
     @Override
     public void update(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
@@ -154,6 +163,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.getById(id);
     }
 
+    /**
+     * 修改员工密码
+     * @param passwordEditDTO
+     */
     @Override
     public void editPassword(PasswordEditDTO passwordEditDTO) {
         passwordEditDTO.setEmpId(BaseContext.getCurrentId());
