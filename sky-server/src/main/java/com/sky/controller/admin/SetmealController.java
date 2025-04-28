@@ -51,5 +51,6 @@ public class SetmealController {
     @ApiOperation("新增套餐")
     public Result save(@RequestBody SetmealDTO setmealDTO){
         setmealService.save(setmealDTO);
+        return Result.success();
     }
 }
