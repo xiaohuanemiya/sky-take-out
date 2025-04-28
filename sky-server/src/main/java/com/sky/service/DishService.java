@@ -12,7 +12,7 @@ import java.util.List;
 public interface DishService {
     PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO);
 
-    List<Dish> list(Integer categoryId);
+    List<Dish> list(Long categoryId);
 
     DishVO getById(Long id);
 
