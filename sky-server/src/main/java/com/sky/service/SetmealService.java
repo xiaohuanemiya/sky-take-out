@@ -13,4 +13,7 @@ public interface SetmealService {
     void startOrStop(Integer status, Long id);
 
     void deleteBatch(Long[] ids);
+
+    void save(SetmealDTO setmealDTO);
+
 }

@@ -46,4 +46,10 @@ public class SetmealController {
         setmealService.deleteBatch(ids);
         return Result.success();
     }
+
+    @PostMapping
+    @ApiOperation("新增套餐")
+    public Result save(@RequestBody SetmealDTO setmealDTO){
+        setmealService.save(setmealDTO);
+    }
 }
