@@ -23,4 +23,7 @@ public interface SetmealDishMapper {
             "VALUES " +
             "(#{setmealId}, #{dishId}, #{name}, #{price}, #{copies})")
     void insert(SetmealDish setmealDish);
+
+    @Select("select * from setmeal_dish where setmeal_id=#{setmealId}")
+    List<SetmealDish> getSetmealDishesBySetmealId(Long setmealId);
 }

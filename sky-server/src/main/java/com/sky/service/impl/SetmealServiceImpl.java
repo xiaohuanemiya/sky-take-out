@@ -37,6 +37,9 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+    @Autowired
+    private SetmealService setmealService;
+
     /**
      * 套餐修改
      * @param setmealDTO
@@ -124,5 +127,15 @@ public class SetmealServiceImpl implements SetmealService {
         setmealDishes.forEach(setmealDish -> {
             setmealDishMapper.insert(setmealDish);
         });
+    }
+
+    @Override
+    public SetmealVO getById(Long id) {
+        Setmeal setmeal=setmealMapper.getById(id);
+        SetmealVO setmealVO=new SetmealVO();
+        BeanUtils.copyProperties(setmeal,setmealVO);
+        setmealVO.setCategoryName(categoryMapper.getById(setmeal.getCategoryId()).getName());
+        setmealVO.setSetmealDishes(setmealDishMapper.getSetmealDishesBySetmealId(setmeal.getId()));
+        return setmealVO;
     }
 }
