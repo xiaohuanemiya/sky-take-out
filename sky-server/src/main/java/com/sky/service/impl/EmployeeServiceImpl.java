@@ -174,7 +174,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         passwordEditDTO.setNewPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()));
 
         Employee employee=getByIdWithPassword(passwordEditDTO.getEmpId());
-        if (employee==null) throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        if (employee==null) throw new AccountNotFoundException(MessageConstant.PASSWORD_EDIT_FAILED+" : "+MessageConstant.ACCOUNT_NOT_FOUND);
         log.info("{}",employee.getPassword());
         log.info("{}",passwordEditDTO.getOldPassword());
         if (Objects.equals(employee.getPassword(), passwordEditDTO.getOldPassword())){
@@ -185,7 +185,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             employeeMapper.update(employee);
         }
-        else throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        else throw new PasswordErrorException(MessageConstant.PASSWORD_EDIT_FAILED+" : "+MessageConstant.PASSWORD_ERROR);
     }
 
 }
