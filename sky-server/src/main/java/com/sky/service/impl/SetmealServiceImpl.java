@@ -64,6 +64,11 @@ public class SetmealServiceImpl implements SetmealService {
 
     }
 
+    /**
+     * 套餐分页查询
+     * @param setmealPageQueryDTO
+     * @return
+     */
     @Override
     public PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO) {
         PageHelper.startPage(setmealPageQueryDTO.getPage(),setmealPageQueryDTO.getPageSize());
@@ -84,6 +89,11 @@ public class SetmealServiceImpl implements SetmealService {
         return new PageResult(total,records);
     }
 
+    /**
+     * 套餐启用/禁用
+     * @param status
+     * @param id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
         Setmeal setmeal=setmealMapper.getById(id);
@@ -93,6 +103,10 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.update(setmeal);
     }
 
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
     @Override
     public void deleteBatch(Long[] ids) {
         //判断当前套餐是否能够删除--是否存在起售中的套餐
@@ -110,6 +124,10 @@ public class SetmealServiceImpl implements SetmealService {
 
     }
 
+    /**
+     * 新增套餐
+     * @param setmealDTO
+     */
     @Override
     public void save(SetmealDTO setmealDTO) {
         Setmeal setmeal=new Setmeal();
@@ -129,6 +147,11 @@ public class SetmealServiceImpl implements SetmealService {
         });
     }
 
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
     @Override
     public SetmealVO getById(Long id) {
         Setmeal setmeal=setmealMapper.getById(id);
