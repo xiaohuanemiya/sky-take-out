@@ -98,8 +98,6 @@ public class DishServiceImpl implements DishService {
     public void update(DishDTO dishDTO) {
         Dish dish=dishMapper.getById(dishDTO.getId());
         BeanUtils.copyProperties(dishDTO,dish);
-        dish.setUpdateTime(LocalDateTime.now());
-        dish.setUpdateUser(BaseContext.getCurrentId());
         dishMapper.update(dish);
         dishFlavorMapper.deleteByDishId(dishDTO.getId());
 
@@ -113,10 +111,7 @@ public class DishServiceImpl implements DishService {
     public void save(DishDTO dishDTO) {
         Dish dish=new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
-        dish.setUpdateUser(BaseContext.getCurrentId());
-        dish.setUpdateTime(LocalDateTime.now());
-        dish.setCreateUser(BaseContext.getCurrentId());
-        dish.setCreateTime(LocalDateTime.now());
+
 
         dishMapper.insert(dish);
 

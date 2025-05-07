@@ -49,8 +49,7 @@ public class SetmealServiceImpl implements SetmealService {
         //修改套餐相关
         Setmeal setmeal=setmealMapper.getById(setmealDTO.getId());
         BeanUtils.copyProperties(setmealDTO,setmeal);
-        setmeal.setUpdateTime(LocalDateTime.now());
-        setmeal.setUpdateUser(BaseContext.getCurrentId());
+
         setmealMapper.update(setmeal);
 
         //修改套餐与菜品关联
@@ -98,8 +97,7 @@ public class SetmealServiceImpl implements SetmealService {
     public void startOrStop(Integer status, Long id) {
         Setmeal setmeal=setmealMapper.getById(id);
         setmeal.setStatus(status);
-        setmeal.setUpdateUser(BaseContext.getCurrentId());
-        setmeal.setUpdateTime(LocalDateTime.now());
+
         setmealMapper.update(setmeal);
     }
 
@@ -132,10 +130,7 @@ public class SetmealServiceImpl implements SetmealService {
     public void save(SetmealDTO setmealDTO) {
         Setmeal setmeal=new Setmeal();
         BeanUtils.copyProperties(setmealDTO,setmeal);
-        setmeal.setUpdateTime(LocalDateTime.now());
-        setmeal.setUpdateUser(BaseContext.getCurrentId());
-        setmeal.setCreateTime(LocalDateTime.now());
-        setmeal.setCreateUser(BaseContext.getCurrentId());
+
         setmealMapper.insert(setmeal);
 
         List<SetmealDish> setmealDishes=setmealDTO.getSetmealDishes();
