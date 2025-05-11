@@ -51,7 +51,7 @@ public class DishController {
         return Result.success(dishVO);
     }
 
-
+    @ApiOperation("修改菜品")
     @PutMapping
     public Result update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品:{}",dishDTO);
@@ -75,6 +75,7 @@ public class DishController {
         return Result.success();
     }
 
+    @ApiOperation("菜品启用/禁用")
     @PostMapping("/status/{status}")
     public Result startOrStop(@PathVariable Integer status, @RequestParam Long id){
         log.info("菜品启用/禁用: id:{},status:{}",id,status);
