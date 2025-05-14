@@ -16,6 +16,15 @@
         </where>
         order by sort desc
     </select>
+    <select id="getByType" resultType="com.sky.entity.Category">
+        select * from category
+        <where>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+        </where>
+        order by sort desc
+    </select>
 
     <update id="update">
         update category
